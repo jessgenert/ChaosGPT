@@ -14,9 +14,9 @@ module.exports = {
 				try {
 					const completion = await openai.chat.completions.create({
 						messages: [{ role: 'system', content: prompt }],
-						model: 'gpt-3.5-turbo',
-						max_tokens: 250,
-						temperature: 0.7,
+						model: 'gpt-3.5-turbo-0125',
+						max_tokens: 300,
+						temperature: 1.4,
 					});
 					interaction.channel.send(completion.choices[0].message.content);
 					await interaction.editReply(`${interaction.user}`);
