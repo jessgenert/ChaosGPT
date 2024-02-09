@@ -18,11 +18,9 @@ module.exports = {
 						max_tokens: 300,
 						temperature: 1.4,
 					});
-					if (interaction.channel.type === 'dm') {
-						interaction.user.send(completion.choices[0].message.content);
-					}
-					interaction.channel.send(completion.choices[0].message.content);
-					await interaction.editReply(`${interaction.user}`);
+
+					interaction.editReply(`${interaction.user} prompted: \\"${prompt}\\"\n\n${completion.choices[0].message.content}`);
+
 				}
 				catch (error) {
 
