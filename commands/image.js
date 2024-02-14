@@ -1,30 +1,25 @@
-const {
-	ApplicationCommandOptionType,
-	EmbedBuilder,
-} = require('discord.js');
-const { replicateKey } = require('../config.json');
-const models = require('../models');
+const {	ApplicationCommandOptionType, EmbedBuilder,} = require('discord.js');
+const { apikey } = require('../config.json');
+const OpenAI = require('openai');
+const openai = new OpenAI({ apiKey: apikey });
 
 module.exports = {
 	run: async ({ interaction }) => {
 		try {
 			await interaction.deferReply();
-
-			const { default: Replicate } = await import('replicate');
-
-			const replicate = new Replicate({
-				auth: replicateKey,
-			});
-
+			
 			const prompt = interaction.options.getString('prompt');
-			const model = interaction.options.getString('model') || models[0].value;
 
-			const output = await replicate.run(model, { input: { prompt } });
-
+			const response = await openai.images.generate({
+				model: "dall-e-2",
+				prompt: prompt,
+				n: 1,
+				size: "1024x1024",
+			  });
 			const resultEmbed = new EmbedBuilder()
 				.setTitle('Image Generated')
 				.addFields({ name: 'Prompt', value: prompt })
-				.setImage(output[0])
+				.setImage(response.data[0].url)
 				.setColor('#44a3e3')
 				.setFooter({
 					text: `Requested by ${interaction.user.username}`,
@@ -47,14 +42,7 @@ module.exports = {
 				description: 'Enter your prompt',
 				type: ApplicationCommandOptionType.String,
 				required: true,
-			},
-			{
-				name: 'model',
-				description: 'The image model',
-				type: ApplicationCommandOptionType.String,
-				choices: models,
-				required: false,
-			},
+			}
 		],
 	},
 };
