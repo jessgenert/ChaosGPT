@@ -1,6 +1,7 @@
-const { apikey } = require('../config.json');
+const { chatkey } = require('../config.json');
+const baseURL = 'https://openrouter.ai/api/v1/';
 const OpenAI = require('openai');
-const openai = new OpenAI({ apiKey: apikey });
+const openai = new OpenAI({ baseURL: baseURL, apiKey: chatkey });
 const { ApplicationCommandOptionType } = require('discord.js');
 module.exports = {
 	run: async ({ interaction }) => {
@@ -14,9 +15,9 @@ module.exports = {
 				try {
 					const completion = await openai.chat.completions.create({
 						messages: [{ role: 'system', content: prompt }],
-						model: 'gpt-3.5-turbo-0125',
+						model: 'mistralai/mistral-7b-instruct:free',
 						max_tokens: 300,
-						temperature: 1.4,
+						temperature: 0.7,
 					});
 
 					interaction.editReply(`${interaction.user} prompted: \\"${prompt}\\"\n\n${completion.choices[0].message.content}`);
